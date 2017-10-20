@@ -1,0 +1,16 @@
+faixa: #b5a081
+botao : #ad9879
+hover: #6b452b
+
+aprovado resumo
+0 - enviado. Aguardando avaliação
+1 - Aprovado. 
+2 - Aprovado com restrições
+3- Aguardando nova avaliação
+4 - Reprovado
+
+aprovado banner
+0 - Aguardando envio
+1 - Aprovado
+2 - Aprovado com restrição
+3 - Aguardando banner corrigido
