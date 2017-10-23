@@ -34,7 +34,7 @@ include_once 'inc/config.php';
 					 exit(0);
 			}else{
 		
-				if($_FILES['arquivoPDF']['type'] != 'application/pdf' || $_FILES['termoPDF']['type'] != 'application/pdf'){
+				if($_FILES['arquivoPDF']['type'] != 'application/pdf'){
 					//não pdf
 					echo 'npdf';
 					 exit(0);
@@ -97,28 +97,22 @@ include_once 'inc/config.php';
 				$links = json_encode($link);
 				
 				//$autor = $usuario->getNome();
-				$stmt = $con->prepare("INSERT INTO `trabalhos_cientificos` VALUES (NULL,?,?,?,'0','0',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,?,?,'Aguardando comentário da banca.',?,0)");
+				//excluir as colunas (coloquei o nome delas no whats)
+				//criar a coluna instituicao
+				$cpf = $arquivos->cpf;
+				$area = $_POST['area'];
+				$instituicao = $arquivos->instituicao;
+				$stmt = $con->prepare("INSERT INTO `trabalhos_cientificos` VALUES (NULL,?,?,?,'0','0',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,?,?,'Aguardando comentário da banca.',?)");
 				$stmt->bindParam(1,$titulo);
-				$stmt->bindParam(2,$arquivos->cpf); 
+				$stmt->bindParam(2,$cpf); 
 				$stmt->bindParam(3,$autor2);
-				$stmt->bindParam(4,$_POST['area']);
+				$stmt->bindParam(4,$area);
 				$stmt->bindParam(5,$links);
-				$stmt->bindParam(6,$arquivos->instituicao);  
+				$stmt->bindParam(6,$instituicao);  
 				
 				if($stmt->execute())
 				{
 				
-					$ok = true;
-					for($i=0;$i<count($dataFinalAprovaBanca);$i++)
-					{
-						if((strtotime(date("Y-m-d"))) > strtotime($dataFinalAprovaBanca[$i].' - 2 days'))
-							$data_submissao_txt .= '<span style="text-decoration: line-through;">'.(date_format(date_create($dataFinalAprovaBanca[$i]),"d/m/Y")).'</span> ';
-						elseif($ok || $i == (count($dataFinalAprovaBanca)-1))
-						{
-							$ok = false;
-							$data_submissao_txt .= (date_format(date_create($dataFinalAprovaBanca[$i]),"d/m/Y")). ' ';
-						}
-					}
 					/* // Create the email and send the message
 					$to = $email; // Add your email address inbetween the '' replacing yourname@yourdomain.com - This is where the form will send a message to.
 					$email_subject = 'ENEPET PIAUÍ 2017 - TRABALHO ENVIADO: '. $titulo;
@@ -179,7 +173,6 @@ include_once 'inc/config.php';
 					//arquivo não inserido
 					
 					@unlink($arquivo_resumo);
-					@unlink($arquivo_termo);
 					
 					echo 'arquivo';
 					
